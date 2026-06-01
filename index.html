@@ -1,0 +1,237 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:12px}
+.tabs{display:flex;gap:4px;margin-bottom:14px}
+.tab{flex:1;padding:8px 6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:12px;font-weight:500;border-radius:var(--border-radius-md);cursor:pointer;text-align:center;transition:all .15s}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.section{display:none}
+.section.active{display:block}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.field input,.field select,.field textarea{width:100%;font-size:13px;padding:7px 9px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.field textarea{min-height:52px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tipo-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tipo-opt input{display:none}
+.tipo-lbl{display:block;padding:7px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;font-weight:500;text-align:center;cursor:pointer;color:var(--color-text-secondary);background:var(--color-background-primary);transition:all .15s}
+.tipo-opt input:checked+.tipo-lbl.ing{background:var(--color-background-success);color:var(--color-text-success);border-color:var(--color-border-success)}
+.tipo-opt input:checked+.tipo-lbl.gst{background:var(--color-background-danger);color:var(--color-text-danger);border-color:var(--color-border-danger)}
+.btn-gen{width:100%;margin-top:12px;padding:10px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);font-size:13px;font-weight:500;color:var(--color-text-primary);cursor:pointer}
+.btn-gen:active{opacity:.8}
+.result-box{margin-top:12px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;display:none}
+.result-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.result-row{font-size:11.5px;font-family:var(--font-mono);color:var(--color-text-primary);word-break:break-all;line-height:1.6;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px;margin-bottom:8px}
+.btn-copy{width:100%;padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:12px;font-weight:500;color:var(--color-text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-copy.ok{color:var(--color-text-success);border-color:var(--color-border-success)}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:10px 0}
+</style>
+
+<h2 class="sr-only">Generador de filas para Google Sheets — movimientos y deudas</h2>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('cuentas')">Cuentas</div>
+    <div class="tab" onclick="switchTab('favor')">Deudas a favor</div>
+    <div class="tab" onclick="switchTab('contra')">Deudas en contra</div>
+  </div>
+
+  <!-- CUENTAS -->
+  <div class="section active" id="sec-cuentas">
+    <div class="row2">
+      <div class="field"><label>Fecha</label><input type="date" id="c-fecha"></div>
+      <div class="field"><label>Moneda</label>
+        <select id="c-moneda" onchange="document.getElementById('c-badge').textContent=this.value">
+          <option>COP</option><option>USD</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <div class="tipo-toggle">
+        <div class="tipo-opt"><input type="radio" name="c-tipo" id="c-ing" value="Ingreso" checked onchange="filtrarCats()"><label for="c-ing" class="tipo-lbl ing">Ingreso</label></div>
+        <div class="tipo-opt"><input type="radio" name="c-tipo" id="c-gst" value="Gasto" onchange="filtrarCats()"><label for="c-gst" class="tipo-lbl gst">Gasto</label></div>
+      </div>
+    </div>
+    <div class="field"><label>Categoría</label><select id="c-cat"></select></div>
+    <div class="field"><label>Cuenta</label>
+      <select id="c-cuenta">
+        <option value="">Seleccionar…</option>
+        <option>efectivo cop</option><option>efectivo usd</option><option>ARQ(dolar app)</option>
+        <option>nequi</option><option>bancolombia</option><option>nu bank</option>
+        <option>ibkr usd</option><option>binance USDT (Tether)</option>
+        <option>paypal</option><option>banistmo</option><option>global 66</option>
+      </select>
+    </div>
+    <div class="field"><label>Monto</label><input type="number" id="c-monto" placeholder="0" min="0"></div>
+    <div class="field"><label>Descripción</label><input type="text" id="c-desc" placeholder="Opcional…"></div>
+    <div class="field"><label>Notas</label><textarea id="c-notas" placeholder="Opcional…"></textarea></div>
+    <button class="btn-gen" onclick="genCuentas()"><i class="ti ti-table-export" aria-hidden="true" style="font-size:15px"></i> Generar fila</button>
+    <div class="result-box" id="res-cuentas">
+      <div class="result-label">Fila lista para pegar</div>
+      <div class="result-row" id="row-cuentas"></div>
+      <button class="btn-copy" id="btn-copy-c" onclick="copiar('row-cuentas','btn-copy-c')">
+        <i class="ti ti-copy" aria-hidden="true" style="font-size:14px"></i> Copiar al portapapeles
+      </button>
+    </div>
+  </div>
+
+  <!-- DEUDAS A FAVOR -->
+  <div class="section" id="sec-favor">
+    <div class="row2">
+      <div class="field"><label>Fecha</label><input type="date" id="f-fecha"></div>
+      <div class="field"><label>Moneda</label><select id="f-moneda"><option>COP</option><option>USD</option></select></div>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="f-tipo">
+        <option value="">Seleccionar…</option>
+        <option>Nueva deuda a favor</option><option>Me pagaron</option>
+      </select>
+    </div>
+    <div class="field"><label>Contraparte</label>
+      <select id="f-contra">
+        <option value="">Seleccionar…</option>
+        <option>German</option><option>Kathy</option><option>Beesafe</option>
+        <option>Aireservices</option><option>ma cop</option><option>ma usd</option>
+      </select>
+    </div>
+    <div class="field"><label>Concepto</label><input type="text" id="f-concepto" placeholder="Descripción del movimiento…"></div>
+    <div class="field"><label>Monto</label><input type="number" id="f-monto" placeholder="0" min="0"></div>
+    <div class="field"><label>Notas</label><textarea id="f-notas" placeholder="Opcional…"></textarea></div>
+    <button class="btn-gen" onclick="genFavor()"><i class="ti ti-table-export" aria-hidden="true" style="font-size:15px"></i> Generar fila</button>
+    <div class="result-box" id="res-favor">
+      <div class="result-label">Fila lista para pegar</div>
+      <div class="result-row" id="row-favor"></div>
+      <button class="btn-copy" id="btn-copy-f" onclick="copiar('row-favor','btn-copy-f')">
+        <i class="ti ti-copy" aria-hidden="true" style="font-size:14px"></i> Copiar al portapapeles
+      </button>
+    </div>
+  </div>
+
+  <!-- DEUDAS EN CONTRA -->
+  <div class="section" id="sec-contra">
+    <div class="row2">
+      <div class="field"><label>Fecha</label><input type="date" id="x-fecha"></div>
+      <div class="field"><label>Moneda</label><select id="x-moneda"><option>COP</option><option>USD</option></select></div>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="x-tipo">
+        <option value="">Seleccionar…</option>
+        <option>Nueva deuda que debo</option><option>Pagué</option>
+      </select>
+    </div>
+    <div class="field"><label>Contraparte</label>
+      <select id="x-contra">
+        <option value="">Seleccionar…</option>
+        <option>tarjeta credito Bancolombia COP</option>
+        <option>tarjeta credito Bancolombia USD</option>
+        <option>tarjeta credito rappy</option>
+        <option>Tarjeta de credito Nu</option>
+        <option>aireservices tecnicos</option>
+        <option>aireservices Deuda</option>
+      </select>
+    </div>
+    <div class="field"><label>Concepto</label><input type="text" id="x-concepto" placeholder="Descripción del movimiento…"></div>
+    <div class="field"><label>Monto</label><input type="number" id="x-monto" placeholder="0" min="0"></div>
+    <div class="field"><label>Notas</label><textarea id="x-notas" placeholder="Opcional…"></textarea></div>
+    <button class="btn-gen" onclick="genContra()"><i class="ti ti-table-export" aria-hidden="true" style="font-size:15px"></i> Generar fila</button>
+    <div class="result-box" id="res-contra">
+      <div class="result-label">Fila lista para pegar</div>
+      <div class="result-row" id="row-contra"></div>
+      <button class="btn-copy" id="btn-copy-x" onclick="copiar('row-contra','btn-copy-x')">
+        <i class="ti ti-copy" aria-hidden="true" style="font-size:14px"></i> Copiar al portapapeles
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS_ING=['Salario','Arriendo recibido','Dividendos','Freelance','Transferencia recibida','Venta activo','Otro ingreso'];
+const CATS_GST=['Tarjeta de crédito','Servicios públicos','Suscripciones','Alimentación','Transporte','Salud','Ocio','Inversión','Transferencia enviada','Otro gasto'];
+
+function today(){
+  const d=new Date();
+  const off=d.getTimezoneOffset();
+  return new Date(d-off*60000).toISOString().slice(0,10);
+}
+['c-fecha','f-fecha','x-fecha'].forEach(id=>document.getElementById(id).value=today());
+
+function filtrarCats(){
+  const tipo=document.querySelector('input[name="c-tipo"]:checked').value;
+  const cats=tipo==='Ingreso'?CATS_ING:CATS_GST;
+  const sel=document.getElementById('c-cat');
+  sel.innerHTML='<option value="">Seleccionar…</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+}
+filtrarCats();
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['cuentas','favor','contra'][i]===t));
+  document.querySelectorAll('.section').forEach((el,i)=>el.classList.toggle('active',['sec-cuentas','sec-favor','sec-contra'][i]==='sec-'+t));
+}
+
+function fmtFecha(v){
+  if(!v)return'';
+  const[y,m,d]=v.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function val(id){return document.getElementById(id).value.trim();}
+
+function showResult(boxId,rowId,cols){
+  const row=cols.join('\t');
+  document.getElementById(rowId).textContent=row;
+  const box=document.getElementById(boxId);
+  box.style.display='block';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function genCuentas(){
+  const fecha=fmtFecha(val('c-fecha'));
+  const tipo=document.querySelector('input[name="c-tipo"]:checked').value;
+  const cat=val('c-cat');
+  const cuenta=val('c-cuenta');
+  const moneda=val('c-moneda');
+  const monto=val('c-monto');
+  const desc=val('c-desc');
+  const notas=val('c-notas');
+  if(!fecha||!tipo||!cat||!cuenta||!monto){alert('Completa los campos obligatorios');return;}
+  showResult('res-cuentas','row-cuentas',[fecha,tipo,cat,cuenta,moneda,monto,desc,notas]);
+}
+
+function genFavor(){
+  const fecha=fmtFecha(val('f-fecha'));
+  const tipo=val('f-tipo');
+  const contra=val('f-contra');
+  const concepto=val('f-concepto');
+  const moneda=val('f-moneda');
+  const monto=val('f-monto');
+  const notas=val('f-notas');
+  if(!fecha||!tipo||!contra||!concepto||!monto){alert('Completa los campos obligatorios');return;}
+  showResult('res-favor','row-favor',[fecha,tipo,contra,concepto,moneda,monto,notas]);
+}
+
+function genContra(){
+  const fecha=fmtFecha(val('x-fecha'));
+  const tipo=val('x-tipo');
+  const contra=val('x-contra');
+  const concepto=val('x-concepto');
+  const moneda=val('x-moneda');
+  const monto=val('x-monto');
+  const notas=val('x-notas');
+  if(!fecha||!tipo||!contra||!concepto||!monto){alert('Completa los campos obligatorios');return;}
+  showResult('res-contra','row-contra',[fecha,tipo,contra,concepto,moneda,monto,notas]);
+}
+
+function copiar(rowId,btnId){
+  const text=document.getElementById(rowId).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(btnId);
+    btn.classList.add('ok');
+    btn.innerHTML='<i class="ti ti-check" aria-hidden="true" style="font-size:14px"></i> Copiado';
+    setTimeout(()=>{
+      btn.classList.remove('ok');
+      btn.innerHTML='<i class="ti ti-copy" aria-hidden="true" style="font-size:14px"></i> Copiar al portapapeles';
+    },2000);
+  }).catch(()=>alert('No se pudo copiar. Selecciona el texto manualmente.'));
+}
+</script>
