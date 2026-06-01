@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanzas · Registro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F4F1EC;--surface:#FAFAF8;--border:#E0DDD5;--border-strong:#C8C4BA;
+  --text:#1A1917;--text-muted:#7A776E;--text-hint:#AAA79F;
+  --accent:#1D6348;--accent-light:#E1F0EA;--accent-text:#0F4231;
+  --danger:#9B3030;--danger-light:#FCEAEA;
+  --amber:#8B5A0A;--amber-light:#FDF3E3;
+  --font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+  --radius:10px;--radius-sm:6px;--radius-lg:16px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#141210;--surface:#1E1C19;--border:#2E2C28;--border-strong:#3E3C38;
+  --text:#F0EDE6;--text-muted:#8A877E;--text-hint:#5A5750;
+  --accent:#2A8A5E;--accent-light:#0D2B1F;--accent-text:#7ECFAA;
+  --danger:#CF6060;--danger-light:#2A1010;--amber:#D4A04A;--amber-light:#2A1E08;
+}}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;padding:0;-webkit-font-smoothing:antialiased}
+.app{max-width:520px;margin:0 auto;padding:0 0 80px}
+.app-header{padding:28px 20px 0;margin-bottom:20px}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.logo-mark{width:30px;height:30px;background:var(--accent);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app-title{font-size:19px;font-weight:500;letter-spacing:-.3px}
+.app-sub{font-size:12px;color:var(--text-hint);font-family:var(--font-mono);padding-left:40px}
+.tab-bar{display:flex;padding:0 14px;gap:4px;margin-bottom:16px;overflow-x:auto}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex:1;min-width:90px;padding:8px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:var(--font-body);font-size:12.5px;font-weight:400;border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;white-space:nowrap;text-align:center}
+.tab-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+.form-card{margin:0 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.form-section{display:none}
+.form-section.active{display:block}
+.card-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-icon{width:26px;height:26px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-icon svg{width:14px;height:14px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-icon.green{background:var(--accent-light)}.card-icon.green svg{stroke:var(--accent)}
+.card-icon.amber{background:var(--amber-light)}.card-icon.amber svg{stroke:var(--amber)}
+.card-icon.red{background:var(--danger-light)}.card-icon.red svg{stroke:var(--danger)}
+.card-title{font-size:13.5px;font-weight:500}
+.card-sub{font-size:11px;color:var(--text-hint);font-family:var(--font-mono)}
+.form-body{padding:18px 20px}
+.field-grid{display:grid;gap:12px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;font-family:var(--font-mono)}
+.field label span{color:var(--danger);margin-left:1px}
+input,select,textarea{font-family:var(--font-body);font-size:14px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;width:100%;transition:border-color .15s,box-shadow .15s;appearance:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(29,99,72,.12)}
+input::placeholder,textarea::placeholder{color:var(--text-hint)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%238A877E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer}
+textarea{resize:vertical;min-height:60px;line-height:1.5}
+.tipo-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tipo-option{position:relative}
+.tipo-option input[type="radio"]{position:absolute;opacity:0;width:0;height:0}
+.tipo-label{display:flex;align-items:center;justify-content:center;padding:9px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;font-size:13.5px;font-weight:400;color:var(--text-muted);transition:all .15s;width:100%}
+.tipo-option input:checked+.tipo-label.ing{background:var(--accent-light);border-color:var(--accent);color:var(--accent-text);font-weight:500}
+.tipo-option input:checked+.tipo-label.gst{background:var(--danger-light);border-color:var(--danger);color:var(--danger);font-weight:500}
+.monto-wrap{display:flex;align-items:stretch}
+.currency-badge{display:flex;align-items:center;padding:0 9px;background:var(--border);border:1px solid var(--border);border-right:none;border-radius:var(--radius-sm) 0 0 var(--radius-sm);font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);font-weight:500;min-width:38px;justify-content:center;flex-shrink:0}
+.monto-wrap input{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.divider{height:1px;background:var(--border);margin:4px 0}
+.submit-wrap{padding:2px 20px 20px}
+.btn-submit{width:100%;padding:12px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-family:var(--font-body);font-size:14.5px;font-weight:500;cursor:pointer;transition:background .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-submit:hover{background:var(--accent-text)}
+.btn-submit:active{transform:scale(.99)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:var(--radius);font-size:13px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;z-index:999;white-space:nowrap;max-width:calc(100vw - 40px)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.toast.success svg{stroke:#7ECFAA}
+.toast.error svg{stroke:#E07070}
+@media(max-width:400px){
+  .app-header{padding:20px 14px 0}
+  .tab-bar{padding:0 10px}
+  .form-card{margin:0 8px}
+  .card-header,.form-body{padding-left:14px;padding-right:14px}
+  .submit-wrap{padding-left:14px;padding-right:14px}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <div class="logo-row">
+      <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <span class="app-title">Finanzas</span>
+    </div>
+    <p class="app-sub">registro de movimientos</p>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('mov')">Movimientos</button>
+    <button class="tab-btn" onclick="switchTab('favor')">Deudas a favor</button>
+    <button class="tab-btn" onclick="switchTab('contra')">Deudas en contra</button>
+  </div>
+
+  <div class="form-card">
+
+    <!-- MOVIMIENTOS -->
+    <div class="form-section active" id="sec-mov">
+      <div class="card-header">
+        <div class="card-icon green"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+        <div><div class="card-title">Movimiento general</div><div class="card-sub">ingresos y gastos</div></div>
+      </div>
+      <div class="form-body">
+        <div class="field-grid">
+          <div class="field-row">
+            <div class="field"><label>Fecha <span>*</span></label><input type="date" id="m-fecha"></div>
+            <div class="field"><label>Moneda <span>*</span></label>
+              <select id="m-moneda" onchange="document.getElementById('m-badge').textContent=this.value">
+                <option>COP</option><option>USD</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Tipo <span>*</span></label>
+            <div class="tipo-toggle">
+              <div class="tipo-option"><input type="radio" name="m-tipo" id="m-ing" value="Ingreso" checked onchange="filtrarCats()"><label for="m-ing" class="tipo-label ing">Ingreso</label></div>
+              <div class="tipo-option"><input type="radio" name="m-tipo" id="m-gst" value="Gasto" onchange="filtrarCats()"><label for="m-gst" class="tipo-label gst">Gasto</label></div>
+            </div>
+          </div>
+          <div class="field"><label>Categoría <span>*</span></label><select id="m-cat"></select></div>
+          <div class="field"><label>Cuenta <span>*</span></label>
+            <select id="m-cuenta">
+              <option value="">Seleccionar…</option>
+              <option>efectivo cop</option><option>efectivo usd</option><option>ARQ(dolar app)</option>
+              <option>nequi</option><option>bancolombia</option><option>nu bank</option>
+              <option>ibkr usd</option><option>binance USDT (Tether)</option>
+              <option>paypal</option><option>banistmo</option><option>global 66</option>
+            </select>
+          </div>
+          <div class="field"><label>Monto <span>*</span></label>
+            <div class="monto-wrap"><span class="currency-badge" id="m-badge">COP</span><input type="number" id="m-monto" placeholder="0" min="0" step="any"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="field"><label>Descripción</label><input type="text" id="m-desc" placeholder="Ej. Pago arriendo enero…"></div>
+          <div class="field"><label>Notas</label><textarea id="m-notas" placeholder="Opcional…"></textarea></div>
+        </div>
+      </div>
+      <div class="submit-wrap">
+        <button class="btn-submit" id="btn-mov" onclick="submitMov()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Registrar movimiento
+        </button>
+      </div>
+    </div>
+
+    <!-- DEUDAS A FAVOR -->
+    <div class="form-section" id="sec-favor">
+      <div class="card-header">
+        <div class="card-icon green"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
+        <div><div class="card-title">Deudas a favor</div><div class="card-sub">me deben a mí</div></div>
+      </div>
+      <div class="form-body">
+        <div class="field-grid">
+          <div class="field-row">
+            <div class="field"><label>Fecha <span>*</span></label><input type="date" id="f-fecha"></div>
+            <div class="field"><label>Moneda <span>*</span></label>
+              <select id="f-moneda" onchange="document.getElementById('f-badge').textContent=this.value">
+                <option>COP</option><option>USD</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Tipo <span>*</span></label>
+            <select id="f-tipo">
+              <option value="">Seleccionar…</option>
+              <option>Nueva deuda a favor</option><option>Me pagaron</option>
+            </select>
+          </div>
+          <div class="field"><label>Contraparte <span>*</span></label>
+            <select id="f-contra">
+              <option value="">Seleccionar…</option>
+              <option>German</option><option>Kathy</option><option>Beesafe</option>
+              <option>Aireservices</option><option>ma cop</option><option>ma usd</option>
+            </select>
+          </div>
+          <div class="field"><label>Concepto <span>*</span></label><input type="text" id="f-concepto" placeholder="Descripción…"></div>
+          <div class="field"><label>Monto <span>*</span></label>
+            <div class="monto-wrap"><span class="currency-badge" id="f-badge">COP</span><input type="number" id="f-monto" placeholder="0" min="0" step="any"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="field"><label>Notas</label><textarea id="f-notas" placeholder="Opcional…"></textarea></div>
+        </div>
+      </div>
+      <div class="submit-wrap">
+        <button class="btn-submit" id="btn-favor" onclick="submitFavor()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Registrar deuda a favor
+        </button>
+      </div>
+    </div>
+
+    <!-- DEUDAS EN CONTRA -->
+    <div class="form-section" id="sec-contra">
+      <div class="card-header">
+        <div class="card-icon red"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
+        <div><div class="card-title">Deudas en contra</div><div class="card-sub">debo pagar</div></div>
+      </div>
+      <div class="form-body">
+        <div class="field-grid">
+          <div class="field-row">
+            <div class="field"><label>Fecha <span>*</span></label><input type="date" id="x-fecha"></div>
+            <div class="field"><label>Moneda <span>*</span></label>
+              <select id="x-moneda" onchange="document.getElementById('x-badge').textContent=this.value">
+                <option>COP</option><option>USD</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Tipo <span>*</span></label>
+            <select id="x-tipo">
+              <option value="">Seleccionar…</option>
+              <option>Nueva deuda que debo</option><option>Pagué</option>
+            </select>
+          </div>
+          <div class="field"><label>Contraparte <span>*</span></label>
+            <select id="x-contra">
+              <option value="">Seleccionar…</option>
+              <option>tarjeta credito Bancolombia COP</option>
+              <option>tarjeta credito Bancolombia USD</option>
+              <option>tarjeta credito rappy</option>
+              <option>Tarjeta de credito Nu</option>
+              <option>aireservices tecnicos</option>
+              <option>aireservices Deuda</option>
+            </select>
+          </div>
+          <div class="field"><label>Concepto <span>*</span></label><input type="text" id="x-concepto" placeholder="Descripción…"></div>
+          <div class="field"><label>Monto <span>*</span></label>
+            <div class="monto-wrap"><span class="currency-badge" id="x-badge">COP</span><input type="number" id="x-monto" placeholder="0" min="0" step="any"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="field"><label>Notas</label><textarea id="x-notas" placeholder="Opcional…"></textarea></div>
+        </div>
+      </div>
+      <div class="submit-wrap">
+        <button class="btn-submit" id="btn-contra" onclick="submitContra()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Registrar deuda en contra
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg id="toast-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgZKaThaIu5S_H3BrloJxHxnbrhjjtEeXMFMJDlqVN5_RYEY6zMOye_heU1BgWWCGN5Q/exec';
+
+const CATS_ING = ['Salario','Arriendo recibido','Dividendos','Freelance','Transferencia recibida','Venta activo','Otro ingreso'];
+const CATS_GST = ['Tarjeta de crédito','Servicios públicos','Suscripciones','Alimentación','Transporte','Salud','Ocio','Inversión','Transferencia enviada','Otro gasto'];
+
+function toDateValue(d){const off=d.getTimezoneOffset();return new Date(d-off*60000).toISOString().slice(0,10)}
+const hoy = toDateValue(new Date());
+['m-fecha','f-fecha','x-fecha'].forEach(id=>document.getElementById(id).value=hoy);
+
+function filtrarCats(){
+  const tipo = document.querySelector('input[name="m-tipo"]:checked').value;
+  const cats = tipo==='Ingreso' ? CATS_ING : CATS_GST;
+  const sel = document.getElementById('m-cat');
+  sel.innerHTML = '<option value="">Seleccionar…</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+}
+filtrarCats();
+
+function switchTab(t){
+  const tabs = ['mov','favor','contra'];
+  const btns = document.querySelectorAll('.tab-btn');
+  tabs.forEach((id,i)=>{
+    document.getElementById('sec-'+id).classList.toggle('active', id===t);
+    btns[i].classList.toggle('active', id===t);
+  });
+}
+
+function val(id){return document.getElementById(id).value.trim()}
+
+function showToast(msg, ok){
+  const t=document.getElementById('toast');
+  const icon=document.getElementById('toast-icon');
+  t.className='toast '+(ok?'success':'error');
+  icon.innerHTML=ok?'<polyline points="20 6 9 17 4 12"/>':'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3800);
+}
+
+function setLoading(id, loading, label){
+  const btn=document.getElementById(id);
+  if(loading){
+    btn.disabled=true;
+    btn.innerHTML='<div class="btn-spinner"></div> Registrando…';
+  } else {
+    btn.disabled=false;
+    btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> ${label}`;
+  }
+}
+
+async function postSheet(sheet, row){
+  const res = await fetch(SCRIPT_URL, {
+    method:'POST',
+    body: JSON.stringify({sheet, row})
+  });
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error||'Error desconocido');
+  return data;
+}
+
+function resetField(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el.tagName==='SELECT')el.value='';else el.value=''})}
+
+async function submitMov(){
+  const fecha=val('m-fecha'), tipo=document.querySelector('input[name="m-tipo"]:checked').value;
+  const cat=val('m-cat'), cuenta=val('m-cuenta'), moneda=val('m-moneda');
+  const monto=val('m-monto'), desc=val('m-desc'), notas=val('m-notas');
+  if(!fecha||!cat||!cuenta||!monto){showToast('Completa los campos obligatorios',false);return}
+  setLoading('btn-mov',true);
+  try{
+    await postSheet('Movimientos',[fecha,tipo,cat,cuenta,moneda,parseFloat(monto),desc,notas]);
+    showToast('Movimiento registrado ✓',true);
+    resetField(['m-cat','m-cuenta','m-monto','m-desc','m-notas']);
+    document.getElementById('m-fecha').value=toDateValue(new Date());
+  }catch(e){showToast('Error: '+e.message,false)}
+  setLoading('btn-mov',false,'Registrar movimiento');
+}
+
+async function submitFavor(){
+  const fecha=val('f-fecha'), tipo=val('f-tipo'), contra=val('f-contra');
+  const concepto=val('f-concepto'), moneda=val('f-moneda'), monto=val('f-monto'), notas=val('f-notas');
+  if(!fecha||!tipo||!contra||!concepto||!monto){showToast('Completa los campos obligatorios',false);return}
+  setLoading('btn-favor',true);
+  try{
+    await postSheet('Deudas a favor',[fecha,tipo,contra,concepto,moneda,parseFloat(monto),notas]);
+    showToast('Deuda a favor registrada ✓',true);
+    resetField(['f-tipo','f-contra','f-concepto','f-monto','f-notas']);
+    document.getElementById('f-fecha').value=toDateValue(new Date());
+  }catch(e){showToast('Error: '+e.message,false)}
+  setLoading('btn-favor',false,'Registrar deuda a favor');
+}
+
+async function submitContra(){
+  const fecha=val('x-fecha'), tipo=val('x-tipo'), contra=val('x-contra');
+  const concepto=val('x-concepto'), moneda=val('x-moneda'), monto=val('x-monto'), notas=val('x-notas');
+  if(!fecha||!tipo||!contra||!concepto||!monto){showToast('Completa los campos obligatorios',false);return}
+  setLoading('btn-contra',true);
+  try{
+    await postSheet('Deudas en contra',[fecha,tipo,contra,concepto,moneda,parseFloat(monto),notas]);
+    showToast('Deuda en contra registrada ✓',true);
+    resetField(['x-tipo','x-contra','x-concepto','x-monto','x-notas']);
+    document.getElementById('x-fecha').value=toDateValue(new Date());
+  }catch(e){showToast('Error: '+e.message,false)}
+  setLoading('btn-contra',false,'Registrar deuda en contra');
+}
+</script>
+</body>
+</html>
